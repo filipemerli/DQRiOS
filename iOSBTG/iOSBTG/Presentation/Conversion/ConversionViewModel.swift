@@ -12,9 +12,9 @@ final class ConversionViewModel {
     //MARK: Properties
     
     private var currencies: [String: String] = [:]
-    private var offlineCurrencies: [String: Double] = [:]
+    private var offlineCurrencies: [String: Double]?
     private var keys: [String] = []
-    private let apiClient = QuotesApiClient.shared
+    private let apiClient = CurrencyApiClient.shared
     private weak var delegate: ConversionViewModelDelegate?
     public var sourceSelected: Int?
     public var resultDesired: Int?
@@ -29,8 +29,7 @@ final class ConversionViewModel {
     init(delegate: ConversionViewModelDelegate) {
         self.dataManager = DataManager()
         self.delegate = delegate
-        getData()
-        updateOfflineQuotes()
+        getAllCurrencies()
     }
     
     //MARK: Class Methods
@@ -39,29 +38,21 @@ final class ConversionViewModel {
         return keys[index]
     }
     
-    public func getData() {
-        currencies = dataManager?.getInfo() ?? [:]
+    public func getOfflineCodesData() {
+        currencies = dataManager?.getCurrencies() ?? [:]
         filterByCode()
     }
     
-    public func getCurrency(value: String, sourceRow: Int, desiredRow: Int) {
-        let source = keys[sourceRow]
-        let desired = keys[desiredRow]
-        apiClient.getQuote(currency: "\(source),\(desired)") { result in
+    private func getAllCurrencies() {
+        apiClient.getAllCurrencies() { result in
             switch result {
             case .success(let model):
-                let response = model.quotes.map { $0.value }
-                guard
-                    let sourceRespose = response.first,
-                    let desiredResponse = response.last,
-                    let multiplier = Double(value)
-                else { return }
-                let number = ((sourceRespose / desiredResponse) * multiplier)
-                let text = String.localizedStringWithFormat("%.2f", number)
-                self.delegate?.onGetCurrencyCompleted(result: text)
+                self.currencies = model.currencies
+                self.dataManager?.storeCurrencyModel(currencyModel: model)
+                self.filterByCode()
             case .failure(let error):
                 if error.reason == ResponseError.rede.reason {
-                    self.offlineFlow(value: value, sourceRow: sourceRow, desiredRow: desiredRow)
+                    self.getOfflineCodesData()
                 } else {
                     self.delegate?.onFetchFailed(with: error.reason)
                 }
@@ -69,13 +60,40 @@ final class ConversionViewModel {
         }
     }
     
-    private func updateOfflineQuotes() {
+    public func getCurrency(value: String, sourceCode: String, desiredCode: String) {
+        guard keys.count > 0 else { return }
+        apiClient.getQuote(currency: "\(sourceCode),\(desiredCode)") { result in
+            switch result {
+            case .success(let model):
+                guard
+                    let sourceRespose = model.quotes["USD\(sourceCode)"],
+                    let desiredResponse = model.quotes["USD\(desiredCode)"],
+                    let multiplier = Double(value)
+                else { return }
+                let number = ((desiredResponse / sourceRespose) * multiplier)
+                let text = String.localizedStringWithFormat("%.2f", number)
+                self.delegate?.onGetCurrencyCompleted(result: text)
+            case .failure(let error):
+                if error.reason == ResponseError.rede.reason && self.offlineCurrencies?.count ?? 0 > 0 {
+                    self.offlineFlow(value: value, sourceCode: sourceCode, desiredCode: desiredCode)
+                } else {
+                    self.delegate?.onFetchFailed(with: error.reason)
+                }
+            }
+        }
+    }
+    
+    public func updateOfflineQuotes() {
         apiClient.getAllQuotes { result in
             switch result {
             case.success(let model):
                 self.offlineCurrencies = model.quotes
                 self.dataManager?.updateAllQuotes(quotes: model)
             case.failure(_ ):
+                guard let offlineQuotes = self.dataManager?.getQuotes() else {
+                    return
+                }
+                self.offlineCurrencies = offlineQuotes
                 return
             }
         }
@@ -88,13 +106,11 @@ final class ConversionViewModel {
         delegate?.onGetDataCompleted()
     }
     
-    private func offlineFlow(value: String, sourceRow: Int, desiredRow: Int) {
-        let codeSource = keys[sourceRow] // Prevent out of index
-        let codeDesired = keys[desiredRow]
-        guard let sourceValue = offlineCurrencies["USD\(codeSource)"] else { return }
-        guard let desiredValue = offlineCurrencies["USD\(codeDesired)"] else { return }
+    private func offlineFlow(value: String, sourceCode: String, desiredCode: String) {
+        guard let sourceValue = offlineCurrencies?["USD\(sourceCode)"] else { return }
+        guard let desiredValue = offlineCurrencies?["USD\(desiredCode)"] else { return }
         guard let multiplier = Double(value) else { return }
-        let number = ((sourceValue / desiredValue) * multiplier)
+        let number = ((desiredValue / sourceValue) * multiplier)
         let text = String.localizedStringWithFormat("%.2f", number)
         self.delegate?.onGetCurrencyCompleted(result: text)
     }

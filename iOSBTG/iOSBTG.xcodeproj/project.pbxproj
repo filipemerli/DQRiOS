@@ -23,18 +23,15 @@
 		7D12F1D32686652D00277706 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1D22686652D00277706 /* Result.swift */; };
 		7D12F1D926876BC200277706 /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1D826876BC200277706 /* ListViewModel.swift */; };
 		7D12F1DD26876C0C00277706 /* ConversionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1DC26876C0C00277706 /* ConversionViewModel.swift */; };
-		7D12F1DF26876C6500277706 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1DE26876C6500277706 /* TabBarViewController.swift */; };
 		7D12F1E126876E3100277706 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1E026876E3100277706 /* ListViewController.swift */; };
 		7D12F1E326876E3D00277706 /* ConversionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1E226876E3D00277706 /* ConversionViewController.swift */; };
 		7D12F1E6268775D700277706 /* ViewControllersTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1E5268775D700277706 /* ViewControllersTitleLabel.swift */; };
 		7D12F1E8268783C800277706 /* CurrenciesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D12F1E7268783C800277706 /* CurrenciesModel.swift */; };
 		7D4A97C5268A5AF100D754D9 /* iOSBTGTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4A97C4268A5AF100D754D9 /* iOSBTGTests.swift */; };
 		7D4A97CD268A5B1900D754D9 /* ApiClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4A97CC268A5B1900D754D9 /* ApiClientTests.swift */; };
-		7D4A97CF268A5C8400D754D9 /* TabBarViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4A97CE268A5C8400D754D9 /* TabBarViewControllerTests.swift */; };
 		7D4A97D1268A5D9F00D754D9 /* DataManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D4A97D0268A5D9F00D754D9 /* DataManagerTests.swift */; };
 		7D96EB9226895D670069472F /* FilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D96EB9126895D670069472F /* FilterButton.swift */; };
 		7D96EB96268A01C00069472F /* ConversionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D96EB95268A01C00069472F /* ConversionView.xib */; };
-		7D96EB9C268A3D650069472F /* QuotesApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D96EB9B268A3D650069472F /* QuotesApiClient.swift */; };
 		7D96EBA2268A3FD70069472F /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D96EBA1268A3FD70069472F /* DataManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,7 +64,6 @@
 		7D12F1D22686652D00277706 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		7D12F1D826876BC200277706 /* ListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModel.swift; sourceTree = "<group>"; };
 		7D12F1DC26876C0C00277706 /* ConversionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionViewModel.swift; sourceTree = "<group>"; };
-		7D12F1DE26876C6500277706 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		7D12F1E026876E3100277706 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		7D12F1E226876E3D00277706 /* ConversionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionViewController.swift; sourceTree = "<group>"; };
 		7D12F1E5268775D700277706 /* ViewControllersTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllersTitleLabel.swift; sourceTree = "<group>"; };
@@ -76,11 +72,9 @@
 		7D4A97C4268A5AF100D754D9 /* iOSBTGTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSBTGTests.swift; sourceTree = "<group>"; };
 		7D4A97C6268A5AF100D754D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7D4A97CC268A5B1900D754D9 /* ApiClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiClientTests.swift; sourceTree = "<group>"; };
-		7D4A97CE268A5C8400D754D9 /* TabBarViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewControllerTests.swift; sourceTree = "<group>"; };
 		7D4A97D0268A5D9F00D754D9 /* DataManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagerTests.swift; sourceTree = "<group>"; };
 		7D96EB9126895D670069472F /* FilterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterButton.swift; sourceTree = "<group>"; };
 		7D96EB95268A01C00069472F /* ConversionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversionView.xib; sourceTree = "<group>"; };
-		7D96EB9B268A3D650069472F /* QuotesApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotesApiClient.swift; sourceTree = "<group>"; };
 		7D96EBA1268A3FD70069472F /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,7 +142,6 @@
 				7D12F1C72686517600277706 /* CurrencyApiClient.swift */,
 				7D12F1C92686520100277706 /* EndPoints.swift */,
 				7D12F1CB2686636A00277706 /* ResponseError.swift */,
-				7D96EB9B268A3D650069472F /* QuotesApiClient.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -159,7 +152,6 @@
 				7D12F1E4268775B100277706 /* UIElements */,
 				7D12F1DB26876BD500277706 /* Conversion */,
 				7D12F1DA26876BCC00277706 /* List */,
-				7D12F1DE26876C6500277706 /* TabBarViewController.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -255,7 +247,6 @@
 			isa = PBXGroup;
 			children = (
 				7D4A97CC268A5B1900D754D9 /* ApiClientTests.swift */,
-				7D4A97CE268A5C8400D754D9 /* TabBarViewControllerTests.swift */,
 				7D4A97D0268A5D9F00D754D9 /* DataManagerTests.swift */,
 			);
 			path = UnitTests;
@@ -362,7 +353,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D12F1E126876E3100277706 /* ListViewController.swift in Sources */,
-				7D12F1DF26876C6500277706 /* TabBarViewController.swift in Sources */,
 				7D12F1C2268646EE00277706 /* Constants.swift in Sources */,
 				7D12F1CA2686520100277706 /* EndPoints.swift in Sources */,
 				7D12F1E326876E3D00277706 /* ConversionViewController.swift in Sources */,
@@ -378,7 +368,6 @@
 				7D12F1CC2686636A00277706 /* ResponseError.swift in Sources */,
 				7D12F1D12686648F00277706 /* QuotesModel.swift in Sources */,
 				7D12F1D32686652D00277706 /* Result.swift in Sources */,
-				7D96EB9C268A3D650069472F /* QuotesApiClient.swift in Sources */,
 				7D12F1E8268783C800277706 /* CurrenciesModel.swift in Sources */,
 				7D12F1C82686517600277706 /* CurrencyApiClient.swift in Sources */,
 				7D12F1C42686478200277706 /* RequestType.swift in Sources */,
@@ -392,7 +381,6 @@
 			files = (
 				7D4A97C5268A5AF100D754D9 /* iOSBTGTests.swift in Sources */,
 				7D4A97D1268A5D9F00D754D9 /* DataManagerTests.swift in Sources */,
-				7D4A97CF268A5C8400D754D9 /* TabBarViewControllerTests.swift in Sources */,
 				7D4A97CD268A5B1900D754D9 /* ApiClientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

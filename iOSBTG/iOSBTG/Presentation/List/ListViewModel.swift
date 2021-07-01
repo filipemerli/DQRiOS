@@ -24,10 +24,15 @@ final class ListViewModel {
     init(delegate: ListViewModelDelegate) {
         self.delegate = delegate
         self.dataManager = DataManager()
-        callApi()
+        getCodes()
     }
     
     //MARK: Class Methods
+    
+    public func getCode(at row: Int) -> String? {
+        guard keys.count > 0, keys.count > row else { return "" }
+        return "\(keys[row])"
+    }
     
     public func currency(at index: Int) -> String? {
         if values.count != 0 && keys.count != 0 {
@@ -40,15 +45,20 @@ final class ListViewModel {
         }
     }
     
-    public func callApi() {
-        apiClient.getAllCurrencies() { result in
-            switch result {
-            case .success(let model):
-                self.currencies = model.currencies
-                self.dataManager?.storeInfo(currencyModel: model)
-                self.filterByCode()
-            case .failure(let error):
-                self.delegate?.onFetchFailed(with: error.reason)
+    private func getCodes() {
+        if let currenciesData = dataManager?.getCurrencies() {
+            currencies = currenciesData
+            filterByCode()
+        } else {
+            apiClient.getAllCurrencies() { result in
+                switch result {
+                case .success(let model):
+                    self.currencies = model.currencies
+                    self.dataManager?.storeCurrencyModel(currencyModel: model)
+                    self.filterByCode()
+                case .failure(let error):
+                    self.delegate?.onFetchFailed(with: error.reason)
+                }
             }
         }
     }

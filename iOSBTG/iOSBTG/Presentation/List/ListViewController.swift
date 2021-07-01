@@ -1,11 +1,16 @@
 import UIKit
 
+protocol ListViewControllerDelegate: AnyObject {
+    func didChosseCode(code: String)
+}
+
 class ListViewController: UIViewController {
     
     //MARK: Properties
     
     private let cellIdentifier = "tableCell"
     private var viewModel: ListViewModel?
+    private weak var delegate: ListViewControllerDelegate?
     private let filterButtonHeight: CGFloat = 35.0
     private let filterButtonWidth: CGFloat = 85.0
     private let topviewHeight: CGFloat = 70.0
@@ -25,7 +30,7 @@ class ListViewController: UIViewController {
         let table = UITableView(frame: .zero, style: .plain)
         table.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         table.translatesAutoresizingMaskIntoConstraints = false
-        table.allowsSelection = false
+        table.allowsSelection = true
         return table
     }()
     
@@ -44,11 +49,21 @@ class ListViewController: UIViewController {
         return bar
     }()
     
+    init(delegate: ListViewControllerDelegate) {
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //MARK: ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
+        tableView.delegate = self
         filterButton.delegate = self
         searchBar.delegate = self
         view.backgroundColor = .white
@@ -142,6 +157,19 @@ extension ListViewController: UITableViewDataSource {
         cell.textLabel?.text = quote
         return cell
         
+    }
+    
+}
+
+    //MARK: - UITableViewDelegate
+
+extension ListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let code = viewModel?.getCode(at: indexPath.row) else { return }
+        delegate?.didChosseCode(code: code)
+        tableView.deselectRow(at: indexPath, animated: false)
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

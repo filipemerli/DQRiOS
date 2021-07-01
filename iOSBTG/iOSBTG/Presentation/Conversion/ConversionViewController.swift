@@ -4,35 +4,58 @@ class ConversionViewController: UIViewController {
     
     //MARK: Outlets
     
-    @IBOutlet weak var sourcePicker: UIPickerView!
-    @IBOutlet weak var resultPicker: UIPickerView!
+    @IBOutlet weak var resultButton: UIButton! {
+        didSet {
+            resultButton.addTarget(self, action: #selector(resultButtonAction), for: .touchUpInside)
+        }
+    }
+    @IBOutlet weak var sourceButton: UIButton! {
+        didSet {
+            sourceButton.addTarget(self, action: #selector(sourceButtonAction), for: .touchUpInside)
+        }
+    }
     @IBOutlet weak var sourceTextField: UITextField!
     @IBOutlet weak var resultTextField: UITextField!
     @IBOutlet weak var offlineAlertLabel: UILabel!
     @IBOutlet weak var convertButton: UIButton! {
         didSet {
-            convertButton?.addTarget(self, action: #selector(convertAction), for: .touchUpInside)
+            convertButton.addTarget(self, action: #selector(convertButtonAction), for: .touchUpInside)
+            convertButton.layer.cornerRadius = 10.0
         }
     }
     
     //MARK: Properties
     
-    private var viewModel:  ConversionViewModel?
+    private lazy var listViewController: ListViewController = {
+        let viewController = ListViewController(delegate: self)
+        return viewController
+    }()
+    
+    private enum SelectionState {
+        case source
+        case result
+    }
+    
+    private var lastSelectionState: SelectionState?
+    
+    private var viewModel: ConversionViewModel?
+    private var didSelectSourceCode: Bool = false
+    private var didSelectResultCode: Bool = false
     
     //MARK: ViewController Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        sourcePicker.tag = 1
-        resultPicker.tag = 2
         sourceTextField.delegate = self
-        sourcePicker.delegate = self
-        resultPicker.delegate = self
-        sourcePicker.dataSource = self
-        resultPicker.dataSource = self
         viewModel = ConversionViewModel(delegate: self)
-        convertButton.isHidden = true
         offlineAlertLabel.isHidden = true
+        convertButton.isHidden = true
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+            self?.viewModel?.updateOfflineQuotes()
+        }
     }
     
     deinit {
@@ -50,20 +73,31 @@ class ConversionViewController: UIViewController {
         }
     }
     
-    private func setOutletsRules() {
-        resultTextField.allowsEditingTextAttributes = false
-    }
-    
-    @objc private func convertAction() {
-        callConvertion()
-        sourceTextField.resignFirstResponder()
-    }
-    
     private func callConvertion() {
         guard let text = sourceTextField.text else { return }
-        let sourceRow = sourcePicker.selectedRow(inComponent: 0)
-        let desiredRow = resultPicker.selectedRow(inComponent: 0)
-        viewModel?.getCurrency(value: text, sourceRow: sourceRow, desiredRow: desiredRow)
+        guard let sourceCode = sourceButton.title(for: .normal) else { return }
+        guard let desiredCode = resultButton.title(for: .normal) else { return }
+        viewModel?.getCurrency(value: text, sourceCode: sourceCode, desiredCode: desiredCode)
+    }
+    
+    @objc private func sourceButtonAction() {
+        lastSelectionState = .source
+        showListController()
+    }
+    
+    @objc private func resultButtonAction() {
+        lastSelectionState = .result
+        showListController()
+    }
+    
+    @objc private func convertButtonAction() {
+        sourceTextField.resignFirstResponder()
+        callConvertion()
+    }
+    
+    private func showListController() {
+        sourceTextField.resignFirstResponder()
+        present(listViewController, animated: true, completion: nil)
     }
 }
 
@@ -72,30 +106,14 @@ class ConversionViewController: UIViewController {
 extension ConversionViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        convertButton.isHidden = false
         sourceTextField.text?.removeAll()
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+        if didSelectResultCode && didSelectSourceCode {
+            convertButton.isHidden = false
+        }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         convertButton.isHidden = true
-        callConvertion()
-    }
-}
-
-    //MARK: - UIPickerViewDelegate
-
-extension ConversionViewController: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if pickerView.tag == 1 {
-            viewModel?.sourceSelected = row
-        } else {
-            viewModel?.resultDesired = row
-        }
     }
 }
 
@@ -109,14 +127,11 @@ extension ConversionViewController: ConversionViewModelDelegate {
     }
     
     func onGetDataCompleted() {
-        DispatchQueue.main.async { [weak self] in
-            self?.sourcePicker.reloadAllComponents()
-            self?.resultPicker.reloadAllComponents()
-        }
+
     }
     
     func onFetchFailed(with reason: String) {
-        //showAlert(title: "Alerta", message: reason) // bug here
+        showAlert(title: "Alerta", message: reason)
     }
     
     func displayOfflineAlert() {
@@ -124,18 +139,26 @@ extension ConversionViewController: ConversionViewModelDelegate {
     }
 }
 
-    //MARK: - UIPickerViewDataSource
+    //MARK: - ConversionListViewControllerDelegate
 
-extension ConversionViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
+extension ConversionViewController: ListViewControllerDelegate {
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return viewModel?.pickerCount ?? 0
+    func didChosseCode(code: String) {
+        switch lastSelectionState {
+        case .source:
+            didSelectSourceCode = true
+            DispatchQueue.main.async { [weak self] in
+                self?.sourceButton.setTitle(code, for: .normal)
+            }
+        case .result:
+            didSelectResultCode = true
+            DispatchQueue.main.async { [weak self] in
+                self?.resultButton.setTitle(code, for: .normal)
+            }
+        case .none:
+            return
+        }
     }
+
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return viewModel?.getCode(index: row)
-    }
 }
